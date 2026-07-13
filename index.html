@@ -79,10 +79,11 @@
   .eyebrow { display: inline-block; color: var(--green); font-weight: 700; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
   .hero h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.05; margin: 0 auto 20px; max-width: 780px; }
   .hero p.lead { font-size: clamp(17px, 2.4vw, 20px); color: var(--muted); max-width: 640px; margin: 0 auto 34px; }
-  .hero-stats { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; margin-top: 46px; }
-  .stat { text-align: center; }
-  .stat b { display: block; font-size: 26px; color: var(--green); }
-  .stat span { font-size: 13px; color: var(--muted); }
+  .ul-word { position: relative; white-space: nowrap; }
+  .ul-draw { position: absolute; left: -3%; bottom: -0.16em; width: 106%; height: 0.4em; overflow: visible; pointer-events: none; }
+  .ul-draw path { fill: none; stroke: var(--green); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 124; stroke-dashoffset: 124; }
+  #screen-intro.active .ul-draw path { animation: ulDraw 0.72s cubic-bezier(0.6, 0, 0.35, 1) 1.05s forwards; }
+  @keyframes ulDraw { to { stroke-dashoffset: 0; } }
   .hero-visual { margin: 40px auto 0; max-width: 620px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .chip-card { background: var(--green-tint-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 12px; font-size: 13px; font-weight: 600; color: var(--green-dark); display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .chip-card svg { width: 26px; height: 26px; color: var(--green); }
@@ -115,11 +116,11 @@
   #screen-intro.active .hero > .btn { animation-delay: 0.46s; }
   #screen-intro.active .trust-band { animation-delay: 0.56s; }
   #screen-intro.active .hero-visual { animation-delay: 0.66s; }
-  #screen-intro.active .hero-stats { animation-delay: 0.74s; }
   #screen-intro.active .hero-logo { filter: drop-shadow(0 8px 18px rgba(55,73,47,0.14)); }
   @media (prefers-reduced-motion: reduce) {
     #screen-intro.active .hero > *,
     #screen-intro.active .hero-logo { animation: none; opacity: 1; transform: none; }
+    #screen-intro.active .ul-draw path { animation: none; stroke-dashoffset: 0; }
     .screen { animation: none; }
   }
 
@@ -145,6 +146,8 @@
   #progressPct { font-size: 14px; font-weight: 800; color: var(--green); }
   @media (prefers-reduced-motion: reduce) {
     .progress-fill::after, #progressStep::before { animation: none; }
+    .product, .addon { animation: none; }
+    .p-link .p-arrow, .p-link:hover .p-arrow, .p-link:active .p-arrow { transform: none; }
   }
   .step-title { font-size: clamp(24px, 4vw, 34px); margin: 6px 0 6px; }
   .step-sub { color: var(--muted); margin: 0 0 26px; font-size: 16px; }
@@ -158,6 +161,8 @@
   .option.selected { border-color: var(--green); background: var(--green-tint); }
   .option.selected .tick { background: var(--green); border-color: var(--green); }
   .option.selected .tick svg { opacity: 1; }
+  .option .opt-label { display: flex; flex-direction: column; gap: 2px; }
+  .option .opt-hint { font-size: 12.5px; font-weight: 600; color: var(--muted); }
   .options.name-step { display: block; }
   .name-field { margin: 2px 0; }
   .name-field input { width: 100%; font-family: 'Mulish', sans-serif; font-size: 20px; font-weight: 700; color: var(--ink); padding: 20px 22px; border: 2px solid var(--border); border-radius: var(--radius); background: #fff; transition: border-color 0.16s ease, box-shadow 0.16s ease; }
@@ -199,7 +204,9 @@
 
   .bundle { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 38px 0 12px; }
   @media (max-width: 860px) { .bundle { grid-template-columns: 1fr; } }
-  .product { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: #fff; display: flex; flex-direction: column; box-shadow: var(--shadow); transition: transform 0.2s; }
+  .product { border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: #fff; display: flex; flex-direction: column; box-shadow: var(--shadow); transition: transform 0.2s; animation: glide 0.5s cubic-bezier(0.16, 0.84, 0.44, 1) backwards; }
+  .product:nth-child(2) { animation-delay: 0.09s; }
+  .product:nth-child(3) { animation-delay: 0.18s; }
   .product:hover { transform: translateY(-4px); }
   .p-img { position: relative; background: var(--green-tint-2); height: 200px; display: flex; align-items: center; justify-content: center; padding: 20px; border-bottom: 1px solid var(--border); overflow: hidden; }
   .p-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; mix-blend-mode: multiply; }
@@ -216,8 +223,12 @@
   .p-timing b { display: block; }
   .p-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
   .p-price { font-weight: 800; font-size: 18px; }
-  .p-link { font-size: 13px; color: var(--green); text-decoration: none; font-weight: 700; }
+  .p-link { font-size: 13px; color: var(--green); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: transform 0.12s ease; }
   .p-link:hover { text-decoration: underline; }
+  .p-link .p-arrow { transition: transform 0.18s cubic-bezier(0.16, 0.84, 0.44, 1); }
+  .p-link:hover .p-arrow { transform: translateX(4px); }
+  .p-link:active { transform: scale(0.97); }
+  .p-link:active .p-arrow { transform: translateX(8px); }
 
   /* ---------- Add-ons ---------- */
   .addons { margin: 30px 0 6px; }
@@ -225,8 +236,12 @@
   .addons .sub { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
   .addon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 860px) { .addon-grid { grid-template-columns: 1fr; } }
-  .addon { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; display: flex; gap: 14px; align-items: center; transition: all 0.16s; font-family: 'Mulish'; }
-  .addon:hover { border-color: var(--green); }
+  .addon { position: relative; text-align: left; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; cursor: pointer; display: flex; gap: 14px; align-items: center; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.16s, background 0.16s; font-family: 'Mulish'; animation: glide 0.45s cubic-bezier(0.16, 0.84, 0.44, 1) backwards; }
+  .addon:nth-child(2) { animation-delay: 0.08s; }
+  .addon:nth-child(3) { animation-delay: 0.16s; }
+  .addon:hover { border-color: var(--green); background: var(--green-tint); transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .addon:hover .addon-img { background: var(--green-tint); }
+  .addon:hover .addon-toggle { background: var(--green); color: #fff; }
   .addon.selected { border-color: var(--green); background: var(--green-tint); }
   .addon-badge { position: absolute; top: -9px; left: 14px; background: var(--sand); color: #3a2c05; font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
   .addon-img { width: 62px; height: 62px; border-radius: 12px; background: var(--green-tint-2); flex-shrink: 0; display: grid; place-items: center; padding: 6px; }
@@ -290,13 +305,28 @@
   footer.site { text-align: center; padding: 40px 24px 60px; color: var(--muted); font-size: 12.5px; }
   footer.site a { color: var(--green); }
 
+  .print-only { display: none; }
   @media print {
-    .announce, header.site, footer.site, .capture, .results-actions, .summary-bar .ship, .demo-pill, .addons { display: none !important; }
-    .product, .product:hover { box-shadow: none; transform: none; }
+    @page { size: A4 portrait; margin: 14mm; }
+    .announce, header.site, footer.site, .screen, .demo-pill { display: none !important; }
     body { background: #fff; }
-    .screen { display: none !important; }
-    .screen.active { display: block !important; }
+    .print-only { display: block !important; }
   }
+  /* Print regime sheet (only rendered when printing) */
+  #printSheet { color: #1a1a1a; }
+  .ps-head { display: flex; align-items: center; gap: 16px; border-bottom: 3px solid var(--green); padding-bottom: 14px; margin-bottom: 18px; }
+  .ps-logo { height: 52px; width: auto; }
+  .ps-title h1 { font-size: 21px; margin: 0; color: var(--green-dark); font-weight: 800; }
+  .ps-date { font-size: 12px; color: #555; margin-top: 3px; }
+  .ps-intro { font-size: 12.5px; color: #333; margin: 0 0 16px; line-height: 1.5; }
+  .ps-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 14px; align-items: center; padding: 12px 2px; border-bottom: 1px solid #dcdcdc; break-inside: avoid; }
+  .ps-num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--green); color: var(--green-dark); font-weight: 800; font-size: 12px; display: grid; place-items: center; }
+  .ps-main b { font-size: 14.5px; display: block; color: #111; }
+  .ps-main .ps-cat { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green); font-weight: 700; }
+  .ps-right { text-align: right; white-space: nowrap; }
+  .ps-right .ps-dose { font-size: 13.5px; font-weight: 800; color: #111; }
+  .ps-right .ps-when { font-size: 11.5px; color: #555; margin-top: 2px; }
+  .ps-foot { margin-top: 22px; padding-top: 12px; border-top: 2px solid var(--green); font-size: 11px; color: #555; text-align: center; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -326,8 +356,8 @@
     <div class="hero">
       <img class="hero-logo" src="https://gandgvitamins.com/cdn/shop/files/GG_Green_Logo.png?v=1777383793&width=280" alt="G&amp;G" />
       <span class="eyebrow">Personalised Supplement Finder</span>
-      <h1>Find the three supplements your body has been asking for.</h1>
-      <p class="lead">Answer four quick questions and we'll build your personalised daily regime. The right G&amp;G capsules, at the right time of day, with a plan you can actually stick to.</p>
+      <h1>Find the three supplements your <span class="ul-word">body<svg class="ul-draw" viewBox="0 0 120 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3,14 C20,8 40,7 58,10 C74,12 92,15 117,9"/></svg></span> has been asking for.</h1>
+      <p class="lead">Answer a few quick questions and we'll build your personalised daily regime. The right G&amp;G capsules, at the right time of day, with a plan you can actually stick to.</p>
       <button class="btn btn-primary" onclick="Quiz.start()">Build my regime &rarr;</button>
 
       <div class="trust-band">
@@ -343,26 +373,21 @@
               <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
             </g>
           </svg></span>
-          <div class="trust-txt"><b>Made in Britain</b><span>Crafted here in the UK</span></div>
+          <div class="trust-txt"><b>Made in Britain</b><span>Crafted in the UK at our facility in Sussex</span></div>
         </div>
         <div class="trust-sep"></div>
         <div class="trust-item">
           <span class="trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg></span>
-          <div class="trust-txt"><b>Family run</b><span>Independent since the 1960s</span></div>
+          <div class="trust-txt"><b>Family run for 60 years</b><span>Independent since the 1960s, three generations</span></div>
         </div>
         <div class="trust-sep"></div>
         <div class="trust-item">
           <span class="trust-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg></span>
-          <div class="trust-txt"><b>Capsules, not tablets</b><span>No binders or fillers</span></div>
+          <div class="trust-txt"><b>Capsules, not tablets</b><span>No binders or fillers that can affect absorption</span></div>
         </div>
       </div>
 
       <div class="hero-visual" id="heroChips"></div>
-      <div class="hero-stats">
-        <div class="stat"><b>60+</b><span>years of British craft</span></div>
-        <div class="stat"><b id="statCount">1,240</b><span>regimes built</span></div>
-        <div class="stat"><b>Pure</b><span>no fillers or binders</span></div>
-      </div>
     </div>
   </section>
 
@@ -376,6 +401,7 @@
       <h2 class="step-title" id="stepTitle"></h2>
       <p class="step-sub" id="stepSub"></p>
       <div class="options" id="optionsGrid"></div>
+      <div id="sexSlot"></div>
       <div id="dietSlot"></div>
 
       <div class="difference">
@@ -462,6 +488,19 @@
   </section>
 </main>
 
+<section id="printSheet" class="print-only">
+  <div class="ps-head">
+    <img class="ps-logo" src="https://gandgvitamins.com/cdn/shop/files/GG_Green_Logo.png?v=1777383793&width=280" alt="G&amp;G Vitamins" />
+    <div class="ps-title">
+      <h1 id="psTitle">Your G&amp;G Daily Regime</h1>
+      <div class="ps-date" id="psDate"></div>
+    </div>
+  </div>
+  <p class="ps-intro">Your personalised daily supplement plan — how many to take, when in the day, and whether to take each one with food.</p>
+  <div id="psRows"></div>
+  <div class="ps-foot">Pure, capsule-only formulas &middot; No binders or fillers &middot; Family-run &amp; British-made since the 1960s &middot; gandgvitamins.com</div>
+</section>
+
 <footer class="site">
   Prototype for stakeholder review. A concept demo, not a live G&amp;G product. Product names, timings, pricing and imagery referenced from <a href="https://gandgvitamins.com/" target="_blank" rel="noopener">gandgvitamins.com</a>. Supplements are not a substitute for a varied diet or medical advice.
 </footer>
@@ -508,119 +547,147 @@ const SLOTS = {
 /* Real G&G products — handle + variant are live values from gandgvitamins.com */
 const PRODUCTS = [
   { slug:'magnesium-bisglycinate-200mg-90-vegan-capsules', variant:52646917144914, name:'Magnesium Bisglycinate 200mg', size:'90 vegan capsules', cat:'Minerals', price:15, img:IMG+'GAK01-magnesium-bisglycinate-MAIN.jpg',
-    tags:['sleep','stress','muscle','recovery','energy'], slot:'evening', food:'With or without food',
+    tags:['sleep','stress','muscle','recovery','energy'], slot:'evening', food:'With or without food', dose:'2 capsules',
     tip:'Take in the evening to relax muscles and support deeper sleep.',
     blurb:'A gentle, highly absorbable magnesium that eases muscle tension, supports the nervous system and helps you wind down.' },
   { slug:'omega-3-fish-oil', variant:52646913114450, name:'Omega 3 Fish Oil 3000mg', size:'90 softgels', cat:'Omega & Oils', price:15, img:IMG+'GA303-omega-3-fish-oil-MAIN_0191bcad-72c5-4da8-ad14-b1b1b0f22fa6.jpg', exclude:['vegetarian','vegan'],
-    tags:['heart','brain','cognitive','joints','general'], slot:'morning', food:'With a meal',
+    tags:['heart','brain','cognitive','joints','general'], slot:'morning', food:'With a meal', dose:'3 softgels',
     tip:'Take with breakfast, when the fats in your meal boost absorption.',
     blurb:'High-strength EPA & DHA to support your heart, brain and vision. An everyday essential.' },
   { slug:'vitamin-d-plus', variant:52646912393554, name:'Vitamin D3 Plus (with K2)', size:'60 capsules', cat:'Vitamins', price:19, img:IMG+'GA151-vitamin-d3-plus-MAIN_35b2d51c-b76e-4679-bbd1-68101084c04c.jpg',
-    tags:['immunity','bone','general'], slot:'morning', food:'With a meal',
+    tags:['immunity','bone','general'], slot:'morning', food:'With a meal', dose:'1 capsule',
     tip:'Take with your largest meal; it absorbs best alongside fats.',
     blurb:'The UK sunshine vitamin with K2. Supports normal immune function and helps maintain strong bones.' },
   { slug:'vitamin-c-1000mg', variant:52646908559698, name:'Vitamin C Complex 1000mg', size:'120 vegan capsules', cat:'Vitamins', price:12, img:IMG+'GA058-vitamin-c-MAIN_c601a0db-bb2b-4be6-b318-e126f1794e17.jpg',
-    tags:['immunity','beauty','skin','antioxidant','energy'], slot:'morning', food:'With or without food',
+    tags:['immunity','beauty','skin','antioxidant','energy'], slot:'morning', food:'With or without food', dose:'1 capsule',
     tip:'Take in the morning to support immunity through the day.',
     blurb:'High-strength vitamin C with acerola & rosehip to support immunity, energy and collagen formation.' },
   { slug:'vitamin-b-complex-50mg-niacin', variant:52646914752850, name:'Vitamin B Complex with Niacin', size:'120 vegan capsules', cat:'Vitamins', price:16, img:IMG+'GA625-vitamin-b-MAIN.jpg',
-    tags:['energy','stress','cognitive','brain'], slot:'morning', food:'With breakfast',
+    tags:['energy','stress','cognitive','brain'], slot:'morning', food:'With breakfast', dose:'1 capsule',
     tip:'Take early, as B vitamins fuel energy and can feel stimulating late in the day.',
     blurb:'The full B-vitamin spectrum to support energy metabolism and a healthy nervous system.' },
   { slug:'advanced-pro-veflora', variant:52646908625234, name:'Advanced Pro-VeFlora 50 Billion', size:'60 vegan capsules', cat:'Probiotics', price:40, img:IMG+'GA059-advanced-pro-veflora-MAIN_c5c23603-371a-4ed8-a988-d460816036c9.jpg',
-    tags:['gut','digestion','immunity'], slot:'before-breakfast', food:'Before food, keep refrigerated',
+    tags:['gut','digestion','immunity'], slot:'before-breakfast', food:'Before food, keep refrigerated', dose:'1 capsule',
     tip:'Take before breakfast on an empty stomach; store in the fridge.',
     blurb:'50 billion live cultures across 14 strains to support a balanced, healthy gut.' },
   { slug:'zinc-picolinate-22mg', variant:52646915244370, name:'Zinc Picolinate 22mg', size:'120 vegan capsules', cat:'Minerals', price:10, img:IMG+'GA711-zinc-MAIN.jpg',
-    tags:['immunity','mens','skin','hair'], slot:'midday', food:'With food',
+    tags:['immunity','mens','skin','hair'], slot:'midday', food:'With food', dose:'1 capsule',
     tip:'Take with a meal to avoid an upset stomach.',
     blurb:'A highly absorbable zinc for immune defence, skin, hair and hormonal balance.' },
   { slug:'collagen-extra-supplement-capsules', variant:52646915080530, name:'Collagen Extra', size:'60 capsules', cat:'Collagen & Beauty', price:13, img:IMG+'GA704-collagen-extra-MAIN_c0efa740-fed3-4992-ba8d-6e876bc09878.jpg', exclude:['vegetarian','vegan'],
-    tags:['joints','recovery','beauty','skin'], slot:'morning', food:'With or without food',
+    tags:['joints','recovery','beauty','skin'], slot:'morning', food:'With or without food', dose:'2 capsules',
     tip:'Take daily and pair with Vitamin C for best results.',
     blurb:'Hydrolysed collagen with glucosamine, chondroitin, MSM and vitamin C for joints, skin and connective tissue.' },
   { slug:'beauty-collagen-60-capsules', variant:52646908526930, name:'Beauty Collagen', size:'60 capsules', cat:'Collagen & Beauty', price:12, img:IMG+'GA057-beauty-collagen-MAIN_95971a26-ed66-421c-a921-df8451570ff6.jpg', exclude:['vegetarian','vegan'],
-    tags:['beauty','skin','hair'], slot:'morning', food:'With or without food',
+    tags:['beauty','skin','hair'], slot:'morning', food:'With or without food', dose:'2 capsules',
     tip:'Take daily, as the added Vitamin C supports collagen formation.',
     blurb:'Marine collagen with vitamin C and hyaluronic acid to support skin hydration and elasticity.' },
   { slug:'turmeric-curcumin-supplement', variant:52646911279442, name:'Turmeric & Curcumin', size:'60 vegan capsules', cat:'Botanicals', price:12, img:IMG+'GA114-turmeric-curcumin-MAIN_011bc989-3f3e-4477-8001-cf990d8f6e62.jpg',
-    tags:['joints','antioxidant','recovery','gut'], slot:'main-meal', food:'With a meal containing fat',
+    tags:['joints','antioxidant','recovery','gut'], slot:'main-meal', food:'With a meal containing fat', dose:'1 capsule',
     tip:'Take with a meal containing fat to maximise absorption.',
     blurb:'95% curcuminoids with ginger and black pepper for absorption, giving soothing support for joints and gut.' },
   { slug:'total-amino-full-spectrum-amino-acids-120-capsules', variant:52646916161874, name:'Total Amino (Full Spectrum)', size:'120 capsules', cat:'Amino & Sport', price:17, img:IMG+'GA804-total-amino-MAIN.jpg',
-    tags:['muscle','recovery','energy'], slot:'workout', food:'With or without food',
+    tags:['muscle','recovery','energy'], slot:'workout', food:'With or without food', dose:'4 capsules',
     tip:'Take after training to support muscle repair and recovery.',
     blurb:'All the amino acids in free-form to support muscle repair and recovery after training.' },
   { slug:'cal-m-250mg', variant:52646915014994, name:'Cal-M', size:'120 vegan capsules', cat:'Minerals', price:12, img:IMG+'GA701-cal-m-MAIN.jpg',
-    tags:['recovery','sleep','bone','muscle'], slot:'evening', food:'With or without food',
+    tags:['recovery','sleep','bone','muscle'], slot:'evening', food:'With or without food', dose:'2 capsules',
     tip:'Take after exercise or in the evening to aid relaxation and recovery.',
     blurb:'A calcium-magnesium blend loved by athletes to aid relaxation and recovery.' },
   { slug:'night-aid-30-vegan-capsules', variant:52646906954066, name:'Night Aid', size:'30 vegan capsules', cat:'Sleep', price:9, img:IMG+'GA004-night-aid-MAIN_25d6c2e4-61c0-4936-8b97-9be083bb5590.jpg',
-    tags:['sleep','stress'], slot:'bedtime', food:'Away from food',
+    tags:['sleep','stress'], slot:'bedtime', food:'Away from food', dose:'1 capsule',
     tip:'Take 30 to 60 minutes before bed.',
     blurb:'L-tryptophan, magnesium and B6 with calming botanicals to help you drift off naturally.' },
   { slug:'organic-ashwagandha-supplement', variant:52646912917842, name:'Organic Ashwagandha', size:'60 vegan capsules', cat:'Botanicals', price:16, img:IMG+'GA198-organic-ashwagandha-MAIN_9ff0b922-8bb3-479a-8b4e-11682ea6e880.jpg',
-    tags:['stress','sleep','energy','hormones'], slot:'evening', food:'With food',
+    tags:['stress','sleep','energy','hormones'], slot:'evening', food:'With food', dose:'1 capsule',
     tip:'Take with your evening meal to help you unwind (mornings work too).',
     blurb:'Organic adaptogen traditionally used to help the body cope with stress and restore calm.' },
   { slug:'iron-bisglycinate-20mg', variant:52646909575506, name:'Iron Bisglycinate 20mg', size:'60 vegan capsules', cat:'Minerals', price:7, img:IMG+'GA065-iron-MAIN_6c6a7866-301d-4b8b-997b-33a6da4a92a2.jpg',
-    tags:['energy','womens','iron'], slot:'morning', food:'Away from tea, coffee & calcium',
+    tags:['energy','womens','iron'], slot:'morning', food:'Away from tea, coffee & calcium', dose:'1 capsule',
     tip:'Take in the morning, away from tea, coffee or calcium for best absorption.',
     blurb:'A gentle, well-absorbed iron to combat tiredness and support normal energy, ideal if your levels run low.' },
   { slug:'mega-multi-multivitamin', variant:52646916686162, name:'Mega Multi', size:'90 vegan capsules', cat:'Multivitamins', price:19, img:IMG+'GA998-mega-multi-MAIN.jpg',
-    tags:['general','energy','immunity'], slot:'morning', food:'With breakfast',
+    tags:['general','energy','immunity'], slot:'morning', food:'With breakfast', dose:'3 capsules',
     tip:'Take with breakfast as your daily foundation.',
     blurb:'A comprehensive daily multivitamin with vitamins, minerals and amino acids in one foundation.' },
   { slug:'vegan-multivitamin-supplement', variant:52646907707730, name:'Vegan Multi', size:'90 capsules', cat:'Multivitamins', price:29, img:IMG+'GA029-vegan-multi-MAIN_d95ce98c-b5a3-4efb-a16b-c289dcc82f30.jpg',
-    tags:['general','energy','immunity','vegan'], slot:'morning', food:'With breakfast',
+    tags:['general','energy','immunity','vegan'], slot:'morning', food:'With breakfast', dose:'3 capsules',
     tip:'Take with breakfast as your plant-based daily foundation.',
     blurb:'A complete plant-based multivitamin with B12, D, iron, iodine and zinc. The vegan daily foundation.' },
   { slug:'fertility-women-90-vegan-capsules', variant:52646908395858, name:'Fertility Women', size:'90 vegan capsules', cat:'Women & Men', price:26, img:IMG+'GA052-fertility-women-MAIN.jpg',
-    tags:['womens','hormones','fertility'], slot:'morning', food:'With food',
+    tags:['womens','hormones','fertility'], slot:'morning', food:'With food', dose:'3 capsules', sex:'female',
     tip:'Take daily with a meal.',
     blurb:'Zinc, selenium and folate to support reproductive health and preconception nutrition.' },
   { slug:'fertility-men-90-vegan-capsules', variant:52646910067026, name:'Fertility Men', size:'90 vegan capsules', cat:'Women & Men', price:29, img:IMG+'GA074-fertility-men-MAIN.jpg',
-    tags:['mens','fertility'], slot:'morning', food:'With food',
+    tags:['mens','fertility'], slot:'morning', food:'With food', dose:'3 capsules', sex:'male',
     tip:'Take daily with a meal.',
     blurb:'Zinc and selenium to support normal fertility and healthy sperm.' },
   { slug:'saw-palmetto-and-zinc', variant:52646913868114, name:'Saw Palmetto & Zinc', size:'120 vegan capsules', cat:'Botanicals', price:18, img:IMG+'GA455-saw-palmetto-zinc-MAIN.jpg',
-    tags:['mens','hair','hormones'], slot:'midday', food:'With food',
+    tags:['mens','hair','hormones'], slot:'midday', food:'With food', dose:'2 capsules', sex:'male',
     tip:'Take with a meal.',
     blurb:'Traditional support for prostate health, hair and healthy testosterone.' },
   { slug:'evening-primrose-oil', variant:52646913311058, name:'Evening Primrose Oil 1000mg', size:'60 softgels', cat:'Omega & Oils', price:16, img:IMG+'GA340-evening-primrose-oil-MAIN.jpg',
-    tags:['womens','hormones','skin'], slot:'main-meal', food:'With food',
+    tags:['womens','hormones','skin'], slot:'main-meal', food:'With food', dose:'2 softgels', sex:'female',
     tip:'Take with a meal to support hormonal balance.',
     blurb:'9% GLA to support hormonal balance and healthy skin. A women’s favourite.' },
   { slug:'organic-mushroom-blend-supplement', variant:52646910427474, name:'Organic Mushroom Blend', size:'90 vegan capsules', cat:'Botanicals', price:22, img:IMG+'GA080-organic-mushroom-MAIN_af9384d7-e69d-431e-b490-12ca726c5a1b.jpg',
-    tags:['immunity','energy','cognitive','antioxidant'], slot:'morning', food:'With or without food',
+    tags:['immunity','energy','cognitive','antioxidant'], slot:'morning', food:'With or without food', dose:'3 capsules',
     tip:'Take in the morning for daytime vitality and immune support.',
     blurb:'Six organic mushrooms including lion’s mane and reishi for immunity, focus and vitality.' },
   { slug:'selenium-200mcg', variant:52646910787922, name:'Selenium', size:'120 vegan capsules', cat:'Minerals', price:12, img:IMG+'GA097-selenium-MAIN_44e311ba-f1b7-4008-80fd-ea3bb0181855.jpg',
-    tags:['immunity','antioxidant','thyroid','fertility'], slot:'midday', food:'With food',
+    tags:['immunity','antioxidant','thyroid','fertility'], slot:'midday', food:'With food', dose:'1 capsule',
     tip:'Take with a meal.',
     blurb:'Highly bioavailable selenium for immune defence, thyroid function and antioxidant protection.' },
   { slug:'astaxanthin-supplement-4mg', variant:52646912622930, name:'Astaxanthin', size:'30 vegan softgels', cat:'Antioxidants', price:17, img:IMG+'GA158-astaxanthin-MAIN_a2a08281-2ea1-4219-91c4-42df525de2d7.jpg',
-    tags:['antioxidant','skin','recovery','joints'], slot:'main-meal', food:'With a meal containing fat',
+    tags:['antioxidant','skin','recovery','joints'], slot:'main-meal', food:'With a meal containing fat', dose:'1 softgel',
     tip:'Take with a fat-containing meal for absorption.',
     blurb:'A powerful plant-based antioxidant from microalgae to protect skin and support recovery.' },
   { slug:'biotin-5000mcg', variant:52646914687314, name:'Biotin 500µg', size:'120 vegan capsules', cat:'Vitamins', price:9, img:IMG+'GA623-biotin-MAIN_ce69e370-a873-4358-8ad0-a6147d15dec3.jpg',
-    tags:['hair','skin','beauty'], slot:'morning', food:'With or without food',
+    tags:['hair','skin','beauty'], slot:'morning', food:'With or without food', dose:'1 capsule',
     tip:'Take daily for hair, skin and nails.',
-    blurb:'Supports the maintenance of healthy hair, skin and nails.' }
+    blurb:'Supports the maintenance of healthy hair, skin and nails.' },
+  { slug:'glucosamine-chondroitin-vitamin-c', variant:52646916096338, name:'Glucosamine, Chondroitin & Vitamin C', size:'120 capsules', cat:'Joint Support', price:17, img:IMG+'GA778-glucosamine-chondroitin-MAIN.jpg', exclude:['vegetarian','vegan'],
+    tags:['joints','recovery','bone'], slot:'main-meal', food:'With a meal', dose:'2 capsules',
+    tip:'Take with a meal; steady daily use is what supports cartilage over time.',
+    blurb:'Glucosamine and chondroitin with vitamin C to support cartilage, joints and normal collagen formation.' },
+  { slug:'ginkgo-biloba', variant:52646916194642, name:'Ginkgo Biloba', size:'120 vegan capsules', cat:'Botanicals', price:18, img:IMG+'GA805-ginkgo-biloba-MAIN.jpg',
+    tags:['cognitive','brain','heart'], slot:'morning', food:'With or without food', dose:'1 capsule',
+    tip:'Take in the morning to support focus and circulation through the day.',
+    blurb:'Standardised ginkgo with naturally occurring flavonoids to support circulation, memory and mental sharpness.' },
+  { slug:'organic-spirulina-500mg', variant:52646915965266, name:'Organic Spirulina 500mg', size:'120 vegan capsules', cat:'Greens & Superfoods', price:12, img:IMG+'GA773-organic-spirulina-MAIN.jpg',
+    tags:['energy','general','antioxidant','vegan'], slot:'morning', food:'With or without food', dose:'3 capsules',
+    tip:'Take in the morning as a nutrient-dense green boost.',
+    blurb:'A nutrient-dense organic blue-green algae rich in protein, iron and antioxidants for natural, sustained energy.' },
+  { slug:'siberian-ginseng-400mg', variant:52646916522322, name:'Siberian Ginseng 400mg', size:'120 capsules', cat:'Adaptogens', price:16, img:IMG+'GA992-siberian-ginseng-MAIN.jpg',
+    tags:['energy','stress','general'], slot:'morning', food:'With food', dose:'1 capsule',
+    tip:'Take earlier in the day; this adaptogen supports stamina and resilience.',
+    blurb:'A traditional adaptogen used to support energy, stamina and the body\'s resilience to everyday stress.' },
+  { slug:'protecta-immune-formula', variant:52646915440978, name:'Protecta Immune Formula', size:'60 capsules', cat:'Immune Support', price:18, img:IMG+'GA747-protecta-MAIN.jpg',
+    tags:['immunity','antioxidant'], slot:'morning', food:'With food', dose:'1 capsule',
+    tip:'Take daily, or step up during cold and flu season.',
+    blurb:'A targeted blend of vitamin C, zinc and botanicals to reinforce your natural immune defences.' },
+  { slug:'msm-with-vitamin-c', variant:52646916358482, name:'MSM with Vitamin C', size:'120 capsules', cat:'Joint Support', price:12, img:IMG+'GA854-MSM-vitamin-C-MAIN.jpg',
+    tags:['joints','skin','hair','beauty'], slot:'main-meal', food:'With a meal', dose:'2 capsules',
+    tip:'Take with a meal to support joints, skin and connective tissue.',
+    blurb:'Organic sulphur (MSM) with vitamin C to support joints, skin, hair and healthy connective tissue.' },
+  { slug:'colostrum-plus-60-capsules', variant:52646916227410, name:'Colostrum Plus', size:'60 capsules', cat:'Gut Health', price:17, img:IMG+'GA809-colostrum-plus-MAIN.jpg', exclude:['vegan'],
+    tags:['gut','digestion','immunity'], slot:'before-breakfast', food:'Before food', dose:'2 capsules',
+    tip:'Take before breakfast to support the gut lining and immunity.',
+    blurb:'Bovine colostrum rich in immunoglobulins to support gut integrity and a resilient immune system.' }
 ];
 
 /* Best-seller add-ons — always offered on top of the recommended three */
 const ADDONS = [
   { slug:'total-hydrate-lemon-electrolyte-drink-mix-150g-powder', variant:52646912688466, name:'Total Hydrate Electrolytes', size:'Lemon · 150g powder', price:17, img:IMG+'GA173-total-hydrate-MAIN.jpg',
-    slot:'workout', food:'Mixed with water',
+    slot:'workout', food:'Mixed with water', dose:'1 scoop',
     tip:'Stir into water during or after exercise to replace lost electrolytes.',
     blurb:'Clean daily hydration to replace the electrolytes you lose through sweat.' },
   { slug:'cal-m-100g', variant:52646910918994, name:'Cal-M Powder', size:'100g powder', price:11, img:IMG+'GA101-cal-m-MAIN.jpg',
-    slot:'evening', food:'Mixed with water or juice',
+    slot:'evening', food:'Mixed with water or juice', dose:'1 tsp',
     tip:'Mix into water in the evening to relax and unwind.',
     blurb:'A soothing calcium & magnesium powder to relax muscles and aid recovery.' },
   { slug:'total-amino-full-spectrum-amino-acids-120-capsules', variant:52646916161874, name:'Total Amino Full Spectrum', size:'120 capsules', price:17, img:IMG+'GA804-total-amino-MAIN.jpg',
-    slot:'workout', food:'With or without food',
+    slot:'workout', food:'With or without food', dose:'4 capsules',
     tip:'Take after exercise to rebuild and recover.',
     blurb:'All the amino acids your muscles need to repair and rebuild after training.' }
 ];
@@ -642,9 +709,49 @@ const WHY = [
 ];
 
 /* Quiz configuration — 4 layers (age, activity, daily life, goals) */
+const SHARED_GOALS = [
+  { label:'More energy', value:'energy', scores:{ energy:10 } },
+  { label:'Stronger immunity', value:'immunity', scores:{ immunity:10 } },
+  { label:'Better sleep & less stress', value:'sleep', scores:{ sleep:10, stress:6 } },
+  { label:'Joint & muscle support', value:'joints', scores:{ joints:10, recovery:5, muscle:4 } },
+  { label:'Skin, hair & nails', value:'beauty', scores:{ beauty:10, skin:5, hair:5 } },
+  { label:'Gut & digestion', value:'gut', scores:{ gut:10, digestion:6 } },
+  { label:'Heart & brain', value:'heart', scores:{ heart:10, brain:6, cognitive:5 } },
+  { label:'Bone strength', value:'bone', scores:{ bone:10 } },
+  { label:'Everyday wellness', value:'general', scores:{ general:10 } }
+];
+const WOMENS_GOALS = [
+  { label:'Menopause & perimenopause', value:'menopause', scores:{ womens:10, hormones:9 } },
+  { label:'Cycle & PMS support', value:'cycle', scores:{ womens:9, hormones:8, skin:2 } },
+  { label:'Fertility & preconception', value:'fertility-w', scores:{ womens:8, fertility:10, hormones:4 } }
+];
+const MENS_GOALS = [
+  { label:'Prostate & testosterone', value:'prostate', scores:{ mens:10, hormones:6 } },
+  { label:'Hair & scalp', value:'hair-m', scores:{ mens:6, hair:10, skin:2 } },
+  { label:'Fertility & vitality', value:'fertility-m', scores:{ mens:8, fertility:10 } }
+];
+/* Maps an "already taking" answer to the G&G slugs we then leave out of the three */
+const TAKING_MAP = {
+  'vitamin-c':['vitamin-c-1000mg'],
+  'vitamin-d':['vitamin-d-plus'],
+  magnesium:['magnesium-bisglycinate-200mg-90-vegan-capsules'],
+  omega3:['omega-3-fish-oil'],
+  multivitamin:['mega-multi-multivitamin','vegan-multivitamin-supplement'],
+  probiotic:['advanced-pro-veflora'],
+  zinc:['zinc-picolinate-22mg'],
+  iron:['iron-bisglycinate-20mg'],
+  'b-complex':['vitamin-b-complex-50mg-niacin'],
+  collagen:['collagen-extra-supplement-capsules','beauty-collagen-60-capsules']
+};
+
 const STEPS = [
   { id:'name', type:'name', title:'First, what shall we call you?', sub:'We’ll use your name to make the next few questions feel like they’re just for you.' },
-  { id:'age', type:'single', title:'Which age group are you in?', pt:'Nice to meet you, {name}. Which age group are you in?', sub:'We’ll tailor your foundation to your life stage.',
+  { id:'experience', type:'single', title:'How would you describe yourself?', pt:'Nice to meet you, {name}. How would you describe yourself?', sub:'This lets us pitch your regime at exactly the right level.',
+    options:[
+      { label:'New to supplements', value:'beginner', hint:'Just getting started — keep it simple', scores:{ general:2 } },
+      { label:'Already taking supplements', value:'experienced', hint:'I have a routine and want to refine it', scores:{} }
+    ] },
+  { id:'age', type:'single', sex:true, title:'Which age group are you in?', pt:'Which age group are you in, {name}?', sub:'We’ll tailor your foundation to your life stage.',
     options:[
       { label:'18-29', value:'18-29', scores:{ energy:2, skin:1, muscle:1, general:1 } },
       { label:'30-44', value:'30-44', scores:{ energy:2, stress:1, immunity:1, beauty:1, general:1 } },
@@ -658,7 +765,7 @@ const STEPS = [
       { label:'Most days, I train hard', value:'active', scores:{ muscle:2, recovery:2, joints:1, energy:1, heart:1 } },
       { label:'Endurance / competitive athlete', value:'athlete', scores:{ recovery:2, muscle:2, joints:1, energy:1, iron:1, heart:1 } }
     ] },
-  { id:'life', type:'single', title:'What does a typical day look like?', pt:'What does a typical day look like for you, {name}?', sub:'Your daily routine shapes where the gaps are.',
+  { id:'life', type:'multi', max:2, title:'What does a typical day look like?', pt:'What does a typical day look like for you, {name}?', sub:'Pick up to 2 — most of us wear more than one hat.',
     options:[
       { label:'Desk & screen based', value:'desk', scores:{ cognitive:2, brain:1, energy:1, stress:1, skin:1 } },
       { label:'On my feet / physical work', value:'physical', scores:{ joints:2, muscle:1, recovery:1, energy:1, bone:1 } },
@@ -667,20 +774,38 @@ const STEPS = [
       { label:'Lots of travel', value:'travel', scores:{ immunity:2, gut:1, energy:1, sleep:1 } },
       { label:'Busy parent / carer', value:'parent', scores:{ energy:2, immunity:1, stress:1, general:1 } }
     ] },
-  { id:'goals', type:'multi', max:3, title:'What are you trying to achieve?', pt:'What matters most to you right now, {name}?', sub:'Pick up to 3. This drives your bundle.', diet:true,
+  { id:'alreadyTaking', type:'multi', max:10, optional:true, when:s => s.experience === 'experienced',
+    title:'What are you already taking?', pt:'What are you already taking, {name}?',
+    sub:'We’ll leave these out of your three. We can’t vouch for the strength or purity of other brands, so where G&G quality really differs we may still suggest our own.',
     options:[
-      { label:'More energy', value:'energy', scores:{ energy:10 } },
-      { label:'Stronger immunity', value:'immunity', scores:{ immunity:10 } },
-      { label:'Better sleep & less stress', value:'sleep', scores:{ sleep:10, stress:6 } },
-      { label:'Joint & muscle support', value:'joints', scores:{ joints:10, recovery:5, muscle:4 } },
-      { label:'Skin, hair & nails', value:'beauty', scores:{ beauty:10, skin:5, hair:5 } },
-      { label:'Gut & digestion', value:'gut', scores:{ gut:10, digestion:6 } },
-      { label:'Heart & brain', value:'heart', scores:{ heart:10, brain:6, cognitive:5 } },
-      { label:'Bone strength', value:'bone', scores:{ bone:10 } },
-      { label:'Women’s health & hormones', value:'womens', scores:{ womens:10, hormones:6 } },
-      { label:'Men’s health', value:'mens', scores:{ mens:10 } },
-      { label:'Everyday wellness', value:'general', scores:{ general:10 } }
-    ] }
+      { label:'Vitamin C', value:'vitamin-c' },
+      { label:'Vitamin D', value:'vitamin-d' },
+      { label:'Magnesium', value:'magnesium' },
+      { label:'Omega-3', value:'omega3' },
+      { label:'Multivitamin', value:'multivitamin' },
+      { label:'Probiotic', value:'probiotic' },
+      { label:'Zinc', value:'zinc' },
+      { label:'Iron', value:'iron' },
+      { label:'B-complex', value:'b-complex' },
+      { label:'Collagen', value:'collagen' }
+    ] },
+  { id:'concerns', type:'multi', max:4, optional:true, when:s => s.experience === 'experienced',
+    title:'Anything specific you’re working on?', pt:'Anything specific you’re working on, {name}?', sub:'Pick up to 4 and we’ll steer your three toward them.',
+    options:[
+      { label:'Acne & breakouts', value:'acne', scores:{ skin:8, beauty:5, gut:2 } },
+      { label:'IBS & gut health', value:'ibs', scores:{ gut:9, digestion:7 } },
+      { label:'Sleep quality', value:'sleep-c', scores:{ sleep:9, stress:4 } },
+      { label:'Energy & fatigue', value:'energy-c', scores:{ energy:9, iron:3 } },
+      { label:'Low vitamin D / winter sun', value:'sunlight', scores:{ immunity:7, bone:5, general:2 } },
+      { label:'Stress & feeling wired', value:'stress-c', scores:{ stress:9, sleep:4 } },
+      { label:'Joint comfort', value:'joints-c', scores:{ joints:9, recovery:4 } },
+      { label:'Hair, skin & nails', value:'hair-c', scores:{ hair:8, beauty:6, skin:4 } },
+      { label:'Focus & brain fog', value:'focus', scores:{ cognitive:8, brain:7 } },
+      { label:'Everyday immunity', value:'immunity-c', scores:{ immunity:9 } },
+      { label:'Hormone balance', value:'hormones-c', scores:{ hormones:9 } }
+    ] },
+  { id:'goals', type:'multi', max:3, diet:true, title:'What are you trying to achieve?', pt:'What matters most to you right now, {name}?', sub:'Pick up to 3. This drives your bundle.',
+    options:s => [...SHARED_GOALS, ...(s.sex === 'female' ? WOMENS_GOALS : s.sex === 'male' ? MENS_GOALS : [])] }
 ];
 
 /* ---------- Small UI helpers ---------- */
@@ -692,7 +817,7 @@ const HERO_CHIPS = [
   { icon:'moon',    label:'Better sleep' },
   { icon:'leaf',    label:'Gut & digestion' },
   { icon:'heart',   label:'Heart & brain' },
-  { icon:'capsule', label:'Capsules, never tablets' }
+  { icon:'droplet', label:'Skin, hair & nails' }
 ];
 
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -717,7 +842,7 @@ function productCard(p, i){
       <div class="p-timing">${ICONS[s.icon]}<div><b>${s.label} &middot; ${esc(p.food)}</b>${esc(p.tip)}</div></div>
       <div class="p-foot">
         <span class="p-price">&pound;${p.price}</span>
-        <a class="p-link" href="${STORE}/products/${p.slug}" target="_blank" rel="noopener">View product &rarr;</a>
+        <a class="p-link" href="${STORE}/products/${p.slug}" target="_blank" rel="noopener">View product<span class="p-arrow">&rarr;</span></a>
       </div>
     </div>
   </div>`;
@@ -735,11 +860,15 @@ const Quiz = {
   addonSel: new Set(),
   diffIndex: 0,
   diffTimer: null,
+  navDir: 1,
+  shownPct: 0,
+
+  get steps(){ return STEPS.filter(s => !s.when || s.when(this.answers)); },
+  optionsFor(step){ return typeof step.options === 'function' ? step.options(this.answers) : (step.options || []); },
 
   init(){
     document.getElementById('heroChips').innerHTML =
       HERO_CHIPS.map(c => `<div class="chip-card">${ICONS[c.icon]}<span>${esc(c.label)}</span></div>`).join('');
-    document.getElementById('statCount').textContent = this.leadCount().toLocaleString();
   },
 
   leadCount(){
@@ -756,6 +885,8 @@ const Quiz = {
   start(){
     this.step = 0;
     this.diffIndex = 0;
+    this.navDir = 1;
+    this.shownPct = 0;
     this.show('quiz');
     this.render();
     this.showDifference(this.diffIndex);
@@ -769,10 +900,11 @@ const Quiz = {
   },
 
   hasAnswer(){
-    const step = STEPS[this.step];
+    const step = this.steps[this.step];
     if (step.type === 'name') return this.name.trim().length > 0;
     const sel = this.answers[step.id];
-    return step.type === 'multi' ? (sel || []).length > 0 : !!sel;
+    if (step.type === 'multi') return step.optional ? true : (sel || []).length > 0;
+    return !!sel;
   },
 
   titleFor(step){
@@ -786,8 +918,10 @@ const Quiz = {
   },
 
   render(){
-    const step = STEPS[this.step];
-    const total = STEPS.length;
+    const steps = this.steps;
+    if (this.step > steps.length - 1) this.step = steps.length - 1;
+    const step = steps[this.step];
+    const total = steps.length;
     const isName = step.type === 'name';
     const qTotal = total - 1;
 
@@ -795,11 +929,13 @@ const Quiz = {
       document.getElementById('progressFill').style.width = '7%';
       document.getElementById('progressStep').textContent = 'Let’s get started';
       document.getElementById('progressPct').textContent = '';
+      this.shownPct = 7;
     } else {
-      const qNum = this.step;
-      const pct = Math.round((qNum / qTotal) * 100);
+      const raw = Math.round((this.step / qTotal) * 100);
+      const pct = this.navDir < 0 ? raw : Math.max(raw, this.shownPct);
+      this.shownPct = pct;
       document.getElementById('progressFill').style.width = pct + '%';
-      document.getElementById('progressStep').textContent = `Step ${qNum} of ${qTotal}`;
+      document.getElementById('progressStep').textContent = `Step ${this.step} of ${qTotal}`;
       document.getElementById('progressPct').textContent = pct + '%';
     }
 
@@ -816,11 +952,28 @@ const Quiz = {
     } else {
       grid.className = 'options';
       const sel = this.answers[step.id];
-      grid.innerHTML = step.options.map(o => {
+      grid.innerHTML = this.optionsFor(step).map(o => {
         const on = step.type === 'multi' ? (sel || []).includes(o.value) : sel === o.value;
+        const inner = o.hint
+          ? `<span class="opt-label"><span>${esc(o.label)}</span><span class="opt-hint">${esc(o.hint)}</span></span>`
+          : `<span>${esc(o.label)}</span>`;
         return `<button class="option${on ? ' selected' : ''}" onclick="Quiz.select('${o.value}')">
-          <span class="tick">${CHECK}</span><span>${esc(o.label)}</span></button>`;
+          <span class="tick">${CHECK}</span>${inner}</button>`;
       }).join('');
+    }
+
+    const sexSlot = document.getElementById('sexSlot');
+    if (step.sex){
+      sexSlot.innerHTML = `<div class="diet-row">
+        <div class="diet-label">Which best describes you? This unlocks options tailored to you.</div>
+        <div class="segmented">
+          ${['female','male'].map(sx =>
+            `<button class="${this.answers.sex === sx ? 'active' : ''}" onclick="Quiz.setSex('${sx}')">${cap(sx)}</button>`
+          ).join('')}
+        </div>
+      </div>`;
+    } else {
+      sexSlot.innerHTML = '';
     }
 
     const dietSlot = document.getElementById('dietSlot');
@@ -838,7 +991,7 @@ const Quiz = {
     }
 
     document.getElementById('backBtn').style.visibility = this.step === 0 ? 'hidden' : 'visible';
-    document.getElementById('stepHint').textContent = step.type === 'multi' ? `Select up to ${step.max}` : '';
+    document.getElementById('stepHint').textContent = step.type === 'multi' ? (step.optional ? 'Select any that apply' : `Select up to ${step.max}`) : '';
     const nextBtn = document.getElementById('nextBtn');
     nextBtn.textContent = this.step === total - 1 ? 'See my regime →' : 'Continue';
     nextBtn.disabled = !this.hasAnswer();
@@ -856,7 +1009,8 @@ const Quiz = {
   },
 
   select(value){
-    const step = STEPS[this.step];
+    const step = this.steps[this.step];
+    this.navDir = 0;
     if (step.type === 'multi'){
       const cur = this.answers[step.id] || [];
       const idx = cur.indexOf(value);
@@ -865,15 +1019,22 @@ const Quiz = {
       this.answers[step.id] = cur;
     } else {
       this.answers[step.id] = value;
+      if (step.id === 'experience' && value === 'beginner'){
+        delete this.answers.alreadyTaking;
+        delete this.answers.concerns;
+      }
     }
     this.render();
   },
 
   setDiet(d){ this.diet = d; this.render(); },
 
+  setSex(s){ this.answers.sex = s; this.render(); },
+
   next(){
     if (!this.hasAnswer()) return;
-    if (this.step < STEPS.length - 1){
+    this.navDir = 1;
+    if (this.step < this.steps.length - 1){
       this.step++; this.diffIndex++; this.render();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -882,7 +1043,7 @@ const Quiz = {
   },
 
   back(){
-    if (this.step > 0){ this.step--; this.render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (this.step > 0){ this.navDir = -1; this.step--; this.render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
   },
 
   finish(){
@@ -906,25 +1067,38 @@ const Quiz = {
   recommend(){
     const points = {};
     const add = sc => { for (const [k, v] of Object.entries(sc)) points[k] = (points[k] || 0) + v; };
-    STEPS.forEach(step => {
+    this.steps.forEach(step => {
+      const opts = this.optionsFor(step);
       if (step.type === 'single'){
-        const o = step.options.find(x => x.value === this.answers[step.id]);
-        if (o) add(o.scores);
-      } else {
+        const o = opts.find(x => x.value === this.answers[step.id]);
+        if (o && o.scores) add(o.scores);
+      } else if (step.type === 'multi'){
         (this.answers[step.id] || []).forEach(val => {
-          const o = step.options.find(x => x.value === val);
-          if (o) add(o.scores);
+          const o = opts.find(x => x.value === val);
+          if (o && o.scores) add(o.scores);
         });
       }
     });
 
+    const sex = this.answers.sex || '';
+    const taken = new Set();
+    if (this.answers.experience === 'experienced'){
+      (this.answers.alreadyTaking || []).forEach(k => (TAKING_MAP[k] || []).forEach(slug => taken.add(slug)));
+    }
     const diet = this.diet;
+    const eligible = p =>
+      !(p.exclude && p.exclude.includes(diet)) &&
+      !taken.has(p.slug) &&
+      !(p.sex && sex && p.sex !== sex);
+
     const scored = PRODUCTS
-      .filter(p => !(p.exclude && p.exclude.includes(diet)))
+      .filter(eligible)
       .map(p => {
         let score = 0;
         p.tags.forEach(t => { if (points[t]) score += points[t]; });
         if (diet === 'vegan' && p.tags.includes('vegan')) score += 6;
+        if (sex === 'female' && (p.tags.includes('womens') || p.sex === 'female')) score += 5;
+        if (sex === 'male' && (p.tags.includes('mens') || p.sex === 'male')) score += 5;
         return { p, score };
       })
       .filter(x => x.score > 0)
@@ -942,7 +1116,7 @@ const Quiz = {
     if (chosen.length < 3){
       for (const p of PRODUCTS){
         if (chosen.length >= 3) break;
-        if (p.exclude && p.exclude.includes(diet)) continue;
+        if (!eligible(p)) continue;
         if (!chosen.includes(p)) chosen.push(p);
       }
     }
@@ -952,8 +1126,9 @@ const Quiz = {
 
   showResults(){
     const goalStep = STEPS.find(s => s.id === 'goals');
+    const goalOpts = this.optionsFor(goalStep);
     const goals = (this.answers.goals || []).map(v => {
-      const o = goalStep.options.find(x => x.value === v);
+      const o = goalOpts.find(x => x.value === v);
       return o ? o.label.toLowerCase() : v;
     });
     const nm = this.name.trim();
@@ -970,6 +1145,7 @@ const Quiz = {
 
     this.renderAddons();
     this.renderRegime();
+    this.renderPrintSheet();
     this.updateTotals();
     this.show('results');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1008,6 +1184,7 @@ const Quiz = {
     }
     this.updateTotals();
     this.renderRegime();
+    this.renderPrintSheet();
   },
 
   buildCartUrl(){
@@ -1044,6 +1221,26 @@ const Quiz = {
           <div class="item">${esc(it.name)}</div>
           <div class="note">${esc(it.food)}. ${esc(it.tip)}</div>
         </div>
+      </div>`;
+    }).join('');
+  },
+
+  renderPrintSheet(){
+    const items = this.picks.map(p => ({ name:p.name, cat:p.cat, dose:p.dose, slot:p.slot, food:p.food }));
+    this.addonSel.forEach(v => {
+      const a = ADDONS.find(x => x.variant === v);
+      if (a) items.push({ name:a.name, cat:a.cat || 'Add-on', dose:a.dose, slot:a.slot, food:a.food });
+    });
+    items.sort((x, y) => SLOTS[x.slot].rank - SLOTS[y.slot].rank);
+    const nm = this.name.trim();
+    document.getElementById('psTitle').textContent = nm ? `${nm}’s G&G Daily Regime` : 'Your G&G Daily Regime';
+    document.getElementById('psDate').textContent = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('psRows').innerHTML = items.map((it, i) => {
+      const s = SLOTS[it.slot];
+      return `<div class="ps-row">
+        <span class="ps-num">${i + 1}</span>
+        <div class="ps-main"><span class="ps-cat">${esc(it.cat)}</span><b>${esc(it.name)}</b></div>
+        <div class="ps-right"><div class="ps-dose">${esc(it.dose || '')}</div><div class="ps-when">${esc(s.label)} &middot; ${esc(it.food)}</div></div>
       </div>`;
     }).join('');
   },
@@ -1087,12 +1284,13 @@ const Quiz = {
     this.name = '';
     this.picks = [];
     this.addonSel = new Set();
+    this.navDir = 1;
+    this.shownPct = 0;
     document.getElementById('captureForm').style.display = '';
     document.getElementById('successPanel').style.display = '';
     document.getElementById('emailInput').value = '';
     document.getElementById('nameInput').value = '';
     document.getElementById('formErr').textContent = '';
-    document.getElementById('statCount').textContent = this.leadCount().toLocaleString();
     this.show('intro');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
